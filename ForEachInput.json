@@ -1,0 +1,30 @@
+[
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_customers_dataset.csv",
+    "file_name": "olist_customers_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_geolocation_dataset.csv",
+    "file_name": "olist_geolocation_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_order_items_dataset.csv",
+    "file_name": "olist_order_items_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_order_reviews_dataset.csv",
+    "file_name": "olist_order_reviews_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_orders_dataset.csv",
+    "file_name": "olist_orders_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_products_dataset.csv",
+    "file_name": "olist_products_dataset.csv"
+  },
+  {
+    "csv_relative_url": "azure-etl-pipeline/refs/heads/main/data/olist_sellers_dataset.csv",
+    "file_name": "olist_sellers_dataset.csv"
+  }
+]
