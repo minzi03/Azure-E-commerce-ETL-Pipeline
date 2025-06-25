@@ -1,0 +1,16 @@
+{
+    "name": "MySqlTable1",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "filessSQLDB",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "MySqlTable",
+        "schema": [],
+        "typeProperties": {
+            "tableName": "`olist_order_payments`"
+        }
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}

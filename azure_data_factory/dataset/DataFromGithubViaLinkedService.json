@@ -1,0 +1,31 @@
+{
+    "name": "DataFromGithubViaLinkedService",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "httpGithubLinkedService",
+            "type": "LinkedServiceReference"
+        },
+        "parameters": {
+            "csv_relative_url": {
+                "type": "String"
+            }
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "HttpServerLocation",
+                "relativeUrl": {
+                    "value": "@dataset().csv_relative_url",
+                    "type": "Expression"
+                }
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": []
+    },
+    "type": "Microsoft.DataFactory/factories/datasets"
+}
