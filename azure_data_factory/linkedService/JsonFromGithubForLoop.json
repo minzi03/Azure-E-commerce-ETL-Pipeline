@@ -1,0 +1,13 @@
+{
+    "name": "JsonFromGithubForLoop",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "HttpServer",
+        "typeProperties": {
+            "url": "https://raw.githubusercontent.com/minzi03/azure-etl-pipeline/refs/heads/main/adf/ForEachInput.json",
+            "enableServerCertificateValidation": true,
+            "authenticationType": "Anonymous"
+        }
+    }
+}
