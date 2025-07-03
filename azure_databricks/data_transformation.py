@@ -1,4 +1,8 @@
 # Databricks notebook source
+spark
+
+# COMMAND ----------
+
 # Databricks notebook source
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import col, to_date, datediff
@@ -8,9 +12,9 @@ from pymongo import MongoClient
 # COMMAND ----------
 
 # Azure ADLS Gen2 Configuration (for accessing Data Lake Storage)
-storage_account = "olistetlstg"
-application_id = "46ffc682-cbda-438a-a8c1-a6b7d35163d5"
-directory_id = "9d6a79ac-b59d-4c4f-874b-907514214807"
+storage_account = "olistetlstga"
+application_id = "0d394405-7465-4b4f-8179-b27eac5c6fb4"
+directory_id = "5d25a949-9d59-4659-90df-82c00195d214"
 
 # COMMAND ----------
 
@@ -18,13 +22,13 @@ directory_id = "9d6a79ac-b59d-4c4f-874b-907514214807"
 spark.conf.set(f"fs.azure.account.auth.type.{storage_account}.dfs.core.windows.net", "OAuth")
 spark.conf.set(f"fs.azure.account.oauth.provider.type.{storage_account}.dfs.core.windows.net", "org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider")
 spark.conf.set(f"fs.azure.account.oauth2.client.id.{storage_account}.dfs.core.windows.net", application_id)
-spark.conf.set(f"fs.azure.account.oauth2.client.secret.{storage_account}.dfs.core.windows.net", "DJk8Q~Wjb9qjrMr~oW3FtgAEHFo.IcvnJ7ygccrF")
+spark.conf.set(f"fs.azure.account.oauth2.client.secret.{storage_account}.dfs.core.windows.net", "p9u8Q~1T9a6AZo4uBrX0fgjyQy86qVMhtM3BMcIs")
 spark.conf.set(f"fs.azure.account.oauth2.client.endpoint.{storage_account}.dfs.core.windows.net", f"https://login.microsoftonline.com/{directory_id}/oauth2/token")
 
 # COMMAND ----------
 
 # Define path to Bronze layer (raw CSV files)
-base_path = "abfss://olistdata@olistetlstg.dfs.core.windows.net/bronze/"
+base_path = "abfss://olistdata@olistetlstga.dfs.core.windows.net/bronze/"
 
 # COMMAND ----------
 
@@ -41,11 +45,11 @@ sellers_df = spark.read.csv(base_path + "olist_sellers_dataset.csv", header=True
 # COMMAND ----------
 
 # Connect to MongoDB to fetch product category translations
-hostname = "e8yj8.h.filess.io"
-database = "olistDataNoSQL_represent"
-port = "61004"
-username = "olistDataNoSQL_represent"
-password = "b50530ecbbb0978dc6f199a18427e5c23f30d43a"
+hostname = "lqjf0.h.filess.io"
+database = "olistDataNoSQL_basestove"
+port = "27018"
+username = "olistDataNoSQL_basestove"
+password = "921662682985a53bb9c910827602ae2113739b9a"
 
 # Read from MongoDB and convert to Spark DataFrame
 uri = f"mongodb://{username}:{password}@{hostname}:{port}/{database}"
@@ -53,6 +57,22 @@ client = MongoClient(uri)
 mongo_data = pd.DataFrame(list(client[database]["product_categories"].find()))
 mongo_data.drop('_id', axis=1, inplace=True)
 mongo_sparf_df = spark.createDataFrame(mongo_data)
+
+# COMMAND ----------
+
+display(products_df)
+
+# COMMAND ----------
+
+display(mongo_data)
+
+# COMMAND ----------
+
+mongo_data
+
+# COMMAND ----------
+
+display(mongo_sparf_df)
 
 # COMMAND ----------
 
@@ -149,10 +169,14 @@ final_df = remove_duplicate_columns(final_df)
 
 # COMMAND ----------
 
+display(final_df)
+
+# COMMAND ----------
+
 # Write to Silver Layer
 # Save Silver Layer to ADLS (cleaned but still raw structure, mainly for internal exploration)
 
-silver_path = "abfss://olistdata@olistetlstg.dfs.core.windows.net/silver/"
+silver_path = "abfss://olistdata@olistetlstga.dfs.core.windows.net/silver/"
 
 customers_df.write.mode("overwrite").parquet(silver_path + "dim_customers")
 products_df.write.mode("overwrite").parquet(silver_path + "dim_products")
@@ -169,7 +193,7 @@ final_df.write.mode("overwrite").parquet(silver_path + "fact_orders")
 # Write to Gold Layer (for Synapse)
 # Save Gold Layer to ADLS (cleaned & curated structure for analytics tools like Synapse or Power BI)
 
-gold_path = "abfss://olistdata@olistetlstg.dfs.core.windows.net/gold/"
+gold_path = "abfss://olistdata@olistetlstga.dfs.core.windows.net/gold/"
 
 customers_df.write.mode("overwrite").parquet(gold_path + "customers")
 products_df.write.mode("overwrite").parquet(gold_path + "products")
