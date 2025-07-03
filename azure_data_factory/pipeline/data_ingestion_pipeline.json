@@ -145,7 +145,7 @@
                 ],
                 "outputs": [
                     {
-                        "referenceName": "SQLtoADLS",
+                        "referenceName": "SQLToADLS",
                         "type": "DatasetReference"
                     }
                 ]
@@ -182,7 +182,7 @@
             }
         ],
         "annotations": [],
-        "lastPublishTime": "2025-05-30T08:43:01Z"
+        "lastPublishTime": "2025-07-03T16:48:50Z"
     },
     "type": "Microsoft.DataFactory/factories/pipelines"
 }
