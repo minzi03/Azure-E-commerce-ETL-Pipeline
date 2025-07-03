@@ -5,7 +5,7 @@
         "annotations": [],
         "type": "HttpServer",
         "typeProperties": {
-            "url": "https://raw.githubusercontent.com/minzi03/azure-etl-pipeline/refs/heads/main/adf/ForEachInput.json",
+            "url": "https://raw.githubusercontent.com/minzi03/azure-etl-pipeline/refs/heads/main/azure_data_factory/ForEachInput.json",
             "enableServerCertificateValidation": true,
             "authenticationType": "Anonymous"
         }
