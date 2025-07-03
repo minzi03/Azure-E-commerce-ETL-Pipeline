@@ -1,8 +1,8 @@
 {
-    "name": "SQLtoADLS",
+    "name": "SQLToADLS",
     "properties": {
         "linkedServiceName": {
-            "referenceName": "SQLtoADLSLinkedService",
+            "referenceName": "SQLToADLSLinkedService",
             "type": "LinkedServiceReference"
         },
         "annotations": [],
