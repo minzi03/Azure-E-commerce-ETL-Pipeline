@@ -1,0 +1,6 @@
+selected resource name:		data ingestion pipeline
+selected resource type:		pipeline
+factory name:			etl-olist-adf
+factory location:		southeastasia
+subscription id:		cb79f99d-0e01-4ebe-8774-6758475698e8
+time of download (UTC):		Sun, 31 Aug 2025 05:45:09 GMT
