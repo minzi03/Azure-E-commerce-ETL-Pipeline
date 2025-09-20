@@ -23,7 +23,7 @@ azure\_synapse/
 ## 🏗 Architecture — Synapse Serving
 
 ### 🔹 Synapse Integration in the Pipeline
-![Synapse Overview](assets/azure_synapse/synapse.png)
+![Synapse Overview](../assets/azure_synapse/synapse.png)
 
 ---
 
