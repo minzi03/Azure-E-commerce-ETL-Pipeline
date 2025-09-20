@@ -21,7 +21,7 @@ The dataset (2017–2018) captures **orders, payments, customers, products, revi
 ## 2. Dashboards
 
 ### 📈 Sales Dashboard
-![Sales Dashboard](../assets/powerbi/Sales_Dashboard.png)
+![Sales Dashboard](../../assets/powerbi/Sales_Dashboard.png)
 
 **Key Insights**
 - Month-over-month trend of **Total Orders** and **Gross Revenue**.  
@@ -32,7 +32,7 @@ The dataset (2017–2018) captures **orders, payments, customers, products, revi
 ---
 
 ### 🚚 Logistics & Delivery Dashboard
-![Logistics & Delivery Dashboard](../assets/powerbi/Logistics&Delivery_Dashboard.png)
+![Logistics & Delivery Dashboard](../../assets/powerbi/Logistics&Delivery_Dashboard.png)
 
 **Key Insights**
 - On-time vs. late delivery rates.  
@@ -44,7 +44,7 @@ The dataset (2017–2018) captures **orders, payments, customers, products, revi
 ---
 
 ### 👥 Customer Insights Dashboard
-![Customer Insights Dashboard](../assets/powerbi/Customer_Insights_Dashboard.png)
+![Customer Insights Dashboard](../../assets/powerbi/Customer_Insights_Dashboard.png)
 
 **Key Insights**
 - New vs. repeat customers ratio.  
