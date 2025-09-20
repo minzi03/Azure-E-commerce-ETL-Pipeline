@@ -15,7 +15,7 @@ Ingest data from **MongoDB Atlas / On-premise** into ADLS Gen2.
 2. Read collections such as `orders`, `customers`, and `products`.  
 3. Write the raw data into the **Bronze Layer** in Parquet/Delta format.  
 
-![MongoDB Ingestion](assets/olist_db/mongodb.png)
+![MongoDB Ingestion](../assets/olist_db/mongodb.png)
 
 ---
 
@@ -27,7 +27,7 @@ Ingest transactional data from a **MySQL database**.
 2. Extract data from tables like `orders`, `order_items`, and `order_payments`.  
 3. Load the extracted data into ADLS **Bronze Layer** for downstream processing.  
 
-![MySQL Ingestion](assets/olist_db/mysql.png)
+![MySQL Ingestion](../assets/olist_db/mysql.png)
 
 ---
 
@@ -39,7 +39,7 @@ Ingest dataset from an **HTTP endpoint (Filess.io / GitHub)**.
 2. Create temporary staging tables or datasets.  
 3. Store the ingested data into ADLS Gen2 for further pipeline processing.  
 
-![Filess.io Overview](assets/olist_db/filess-io_overview.png)
+![Filess.io Overview](../assets/olist_db/filess-io_overview.png)
 
 ---
 
