@@ -40,39 +40,39 @@ azure\_adls/
 
 ### 🔹 Bronze Layer
 Raw ingested data stored in ADLS Gen2.  
-![Bronze Layer](assets/azure_adls/bronze_layer.png)
+![Bronze Layer](../assets/azure_adls/bronze_layer.png)
 
 ---
 
 ### 🔹 Silver Layer
 Cleaned & standardized datasets (customers, orders, sellers, products, etc.).  
-![Silver Layer](assets/azure_adls/silver_layer.png)
+![Silver Layer](../assets/azure_adls/silver_layer.png)
 
 ---
 
 ### 🔹 Gold Layer (Overview)
 Business-ready star schema for analytics and BI reporting.  
-![Gold Layer](assets/azure_adls/gold_layer.png)
+![Gold Layer](../assets/azure_adls/gold_layer.png)
 
 #### 1. Bridge Table  
 Used to handle many-to-many relationships.  
-![Gold Bridge](assets/azure_adls/gold_bridge.png)
+![Gold Bridge](../assets/azure_adls/gold_bridge.png)
 
 #### 2. Dimension Tables  
 Customer, Product, Seller, Orders, etc.  
-![Gold Dimensions](assets/azure_adls/gold_dim.png)
+![Gold Dimensions](../assets/azure_adls/gold_dim.png)
 
 #### 3. Fact Sales Table  
 Core sales transactions for revenue analysis.  
-![Gold Fact Sales](assets/azure_adls/gold_fact_sales.png)
+![Gold Fact Sales](../assets/azure_adls/gold_fact_sales.png)
 
 #### 4. Aggregated Fact Sales  
 Pre-aggregated data by year/month for faster reporting.  
-![Gold Fact Sales Aggregated](assets/azure_adls/gold_fact_sales_agg.png)
+![Gold Fact Sales Aggregated](../assets/azure_adls/gold_fact_sales_agg.png)
 
 #### 5. Partitioned Fact Sales  
 Optimized by `purchase_date` for performance tuning.  
-![Gold Fact Sales Partitioned](assets/azure_adls/gold_fact_sales_partitioned.png)
+![Gold Fact Sales Partitioned](../assets/azure_adls/gold_fact_sales_partitioned.png)
 
 ---
 
