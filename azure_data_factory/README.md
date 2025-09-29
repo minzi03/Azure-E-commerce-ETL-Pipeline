@@ -1,6 +1,6 @@
-# ⚙️ Azure Data Factory - Data Orchestration
+# Azure Data Factory - Data Orchestration
 
-## 📌 Overview
+## Overview
 This directory contains **Azure Data Factory (ADF)** assets used for **data ingestion and orchestration**.  
 ADF pipelines manage the extraction of raw data from multiple sources (HTTP/GitHub, MySQL, MongoDB, SQL Server) and land them into **Azure Data Lake Gen2 (Bronze Layer)**.  
 
@@ -8,7 +8,7 @@ ADF ensures **automation, scheduling, parameterization, and monitoring** of inge
 
 ---
 
-## 🗂 Directory Structure
+## Directory Structure
 
 ```
 
@@ -38,7 +38,7 @@ azure\_data\_factory/
 
 ---
 
-## 🏗 Architecture - ADF Pipelines
+## Architecture - ADF Pipelines
 
 ### 🔹 Overall ADF Workflow
 ![ADF Pipeline Overview](../assets/azure_data_factory/adf_all.png)
@@ -63,7 +63,7 @@ Iterates over items (e.g., list of tables, files) to trigger ingestion in parall
 
 ---
 
-## ⚡ Key Features
+## Key Features
 - **Parameterized pipelines** → flexible ingestion (multiple tables/files).  
 - **ForEach & Lookup** → dynamic data ingestion from config JSON (`ForEachInput.json`).  
 - **Linked Services** → centralized connection configs (SQL DB, HTTP endpoints, ADLS).  
@@ -72,7 +72,7 @@ Iterates over items (e.g., list of tables, files) to trigger ingestion in parall
 
 ---
 
-## 📊 Usage
+## Usage
 1. Import JSON assets into **ADF Studio**:
    - **Manage → Linked services** → upload JSON files.  
    - **Manage → Datasets** → upload dataset JSONs.  
@@ -83,7 +83,7 @@ Iterates over items (e.g., list of tables, files) to trigger ingestion in parall
 
 ---
 
-## 📚 References
+## References
 - [Azure Data Factory Documentation](https://learn.microsoft.com/en-us/azure/data-factory/introduction)  
 - [ADF Linked Services](https://learn.microsoft.com/en-us/azure/data-factory/concepts-linked-services)  
 - [ADF ForEach Activity](https://learn.microsoft.com/en-us/azure/data-factory/control-flow-for-each-activity)  
