@@ -1,4 +1,4 @@
-# 📊 Olist E-Commerce Dashboards (Power BI)
+# Olist E-Commerce Dashboards (Power BI)
 
 This folder contains the **Power BI dashboards** built for the **Olist Brazilian E-Commerce dataset**.  
 The dashboards provide insights into **Sales**, **Logistics & Delivery**, and **Customer Behavior**, enabling data-driven decision making.
@@ -7,11 +7,11 @@ The dashboards provide insights into **Sales**, **Logistics & Delivery**, and **
 
 ## 1. Project Overview
 
-### 📌 Context  
+### Context  
 Olist is a Brazilian e-commerce platform that connects small and medium-sized businesses to customers.  
 The dataset (2017–2018) captures **orders, payments, customers, products, reviews, deliveries, and logistics performance**.  
 
-### 🎯 Goals  
+### Goals  
 - **Sales Dashboard** → Monitor key revenue and sales trends.  
 - **Customer Insights Dashboard** → Understand customer loyalty, segmentation, and satisfaction.  
 - **Logistics & Delivery Dashboard** → Track delivery efficiency, delays, and regional performance.  
@@ -71,7 +71,7 @@ The dataset (2017–2018) captures **orders, payments, customers, products, revi
 
 ---
 
-## 📚 References
+## References
 - [Brazilian E-Commerce Dataset — Kaggle](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)  
 - [Power BI Documentation](https://learn.microsoft.com/en-us/power-bi/)  
 - [DAX Reference Guide](https://learn.microsoft.com/en-us/dax/)  
