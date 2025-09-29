@@ -1,4 +1,4 @@
-# 🚀 Azure-E-commerce-ETL-Pipeline
+# Azure-E-commerce-ETL-Pipeline
 
 *(ADF + ADLS + Databricks + Synapse + Power BI)*
 
@@ -7,9 +7,9 @@ It ingests raw data from multiple sources (**HTTP/GitHub, MySQL, MongoDB**), lan
 
 ---
 
-## 🏗️ Project Architecture
+## Project Architecture
 
-![Azure ETL Pipeline Architecture](assets/architecture.png)
+![Azure ETL Pipeline Architecture](assets/project_architecture.png)
 
 **Key design highlights:**
 
@@ -22,7 +22,7 @@ It ingests raw data from multiple sources (**HTTP/GitHub, MySQL, MongoDB**), lan
 
 ---
 
-## 🎯 Goals & Highlights
+## Goals & Highlights
 
 * **Complete Lakehouse**: Bronze (raw) → Silver (cleansed) → Gold (business-ready).
 * **Multi-source ingestion**: HTTP/GitHub, SQL/MySQL, MongoDB.
@@ -38,7 +38,7 @@ It ingests raw data from multiple sources (**HTTP/GitHub, MySQL, MongoDB**), lan
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 minzi03-azure-etl-pipeline/
@@ -72,7 +72,7 @@ minzi03-azure-etl-pipeline/
 
 ---
 
-## 🔄 ETL Pipeline Stages
+## ETL Pipeline Stages
 
 ### 1. **Data Ingestion — Bronze Layer**
 
@@ -120,7 +120,7 @@ minzi03-azure-etl-pipeline/
 
 ---
 
-## 🎥 Demo Walkthrough
+## Demo Walkthrough
 
 This walkthrough shows the **end-to-end pipeline in action**.
 
@@ -144,7 +144,7 @@ This walkthrough shows the **end-to-end pipeline in action**.
 
 ---
 
-## 🧩 Data Model (Gold Layer)
+## Data Model (Gold Layer)
 
 **Dimensions**
 
@@ -160,7 +160,7 @@ This walkthrough shows the **end-to-end pipeline in action**.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 * **Azure Data Factory (ADF)** → Orchestration, ingestion pipelines
 * **Azure Data Lake Storage Gen2 (ADLS)** → Centralized Delta Lake
@@ -171,9 +171,9 @@ This walkthrough shows the **end-to-end pipeline in action**.
 
 ---
 
-## 📈 Business Value & Insights
+## Business Value & Insights
 
-🔍 Key analysis results (via Power BI):
+Key analysis results (via Power BI):
 
 * **Top payment method** → Credit Card dominates transactions.
 * **YoY Growth** → \~20% growth from 2017 → 2018 (till Aug).
@@ -182,7 +182,7 @@ This walkthrough shows the **end-to-end pipeline in action**.
 * **Delivery SLAs** → Avg delivery = 10–12 days; delayed orders ↑ in 2018.
 * **Customer Retention** → Repeat purchase rate only 2.5–3%.
 
-✅ **Recommendations**:
+**Recommendations**:
 
 * Improve logistics to reduce delays (optimize approval & shipping).
 * Invest in loyalty programs to boost repeat customers.
@@ -191,7 +191,7 @@ This walkthrough shows the **end-to-end pipeline in action**.
 
 ---
 
-## 🚀 How to Run
+## How to Run
 
 1. **Provision Azure resources** (ADLS, ADF, Databricks, Synapse).
 2. **Deploy ADF assets** from `azure_data_factory/`.
@@ -202,7 +202,7 @@ This walkthrough shows the **end-to-end pipeline in action**.
 
 ---
 
-## 📚 References
+## References
 
 * [Olist E-Commerce Dataset (Kaggle)](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
 * [Azure Data Factory Docs](https://learn.microsoft.com/en-us/azure/data-factory/introduction)
