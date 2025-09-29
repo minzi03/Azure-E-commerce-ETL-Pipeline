@@ -1,11 +1,11 @@
-# 📘 Notebooks — Data Ingestion Examples
+# Notebooks — Data Ingestion Examples
 
 The **`notebooks/`** directory contains examples of ingesting data from multiple sources (MongoDB, MySQL, HTTP/Filess.io) into **Azure Data Lake Storage Gen2 (ADLS Gen2)**.  
 These notebooks serve as prototypes for connecting to source systems and validating data ingestion workflows before fully integrating them into **Azure Data Factory** and **Azure Databricks** pipelines.
 
 ---
 
-## 📂 Notebook Files
+## Notebook Files
 
 ### 1. `DataIngestion_MongoDB.ipynb`  
 Ingest data from **MongoDB Atlas / On-premise** into ADLS Gen2.  
@@ -43,7 +43,7 @@ Ingest dataset from an **HTTP endpoint (Filess.io / GitHub)**.
 
 ---
 
-## 🛠️ Technologies Used
+## Technologies Used
 - **PySpark** (Databricks / Local execution)  
 - **JDBC Connectors** (MySQL, MongoDB)  
 - **ADLS Gen2** (Delta/Parquet storage)  
@@ -51,7 +51,7 @@ Ingest dataset from an **HTTP endpoint (Filess.io / GitHub)**.
 
 ---
 
-## 🎯 Outcomes
+## Outcomes
 These notebooks demonstrate how to ingest data from **heterogeneous sources**:
 - **NoSQL (MongoDB)**  
 - **Relational DB (MySQL)**  
