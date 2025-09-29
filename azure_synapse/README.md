@@ -1,6 +1,6 @@
-# 📊 Azure Synapse Analytics — Serving Layer
+# Azure Synapse Analytics — Serving Layer
 
-## 📌 Overview
+## Overview
 This directory contains **SQL scripts and configuration files** for **Azure Synapse Analytics**, which serves as the **consumption layer** in the Medallion Architecture.  
 
 Synapse enables analysts and BI tools (e.g., **Power BI**) to query curated data in the **Gold Layer** of Azure Data Lake Gen2 efficiently.  
@@ -8,26 +8,24 @@ It leverages **Serverless SQL pools, Dedicated SQL pools, and CETAS (Create Exte
 
 ---
 
-## 🗂 Directory Structure
+## Directory Structure
 
 ```
-
 azure\_synapse/
 │── SQL\_script\_1.sql      # Script for external tables (Gold layer)
 │── SQL\_script\_2.sql      # Script for CETAS / partitioned data
-
 ````
 
 ---
 
-## 🏗 Architecture — Synapse Serving
+## Architecture — Synapse Serving
 
 ### 🔹 Synapse Integration in the Pipeline
-![Synapse Overview](assets/azure_synapse/synapse.png)
+![Synapse Overview](../assets/azure_synapse/synapse.png)
 
 ---
 
-## ⚡ Key Features
+## Key Features
 - **External Tables**: Direct mapping to Delta/Parquet files in ADLS Gold layer.  
 - **CETAS**: Create persistent, optimized external tables for BI queries.  
 - **Partitioned Data Access**: Efficient filtering on `year_month`, `payment_type`, or `purchase_date`.  
@@ -36,7 +34,7 @@ azure\_synapse/
 
 ---
 
-## 📊 Example SQL Scripts
+## Example SQL Scripts
 
 ### Create External Data Source
 ```sql
@@ -78,7 +76,7 @@ GROUP BY year_month;
 
 ---
 
-## 📚 References
+## References
 
 * [Azure Synapse Analytics Documentation](https://learn.microsoft.com/en-us/azure/synapse-analytics/)
 * [Develop tables using CETAS](https://learn.microsoft.com/en-us/azure/synapse-analytics/sql/develop-tables-cetas)

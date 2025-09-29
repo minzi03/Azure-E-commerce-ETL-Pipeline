@@ -1,16 +1,15 @@
-# 🔥 Azure Databricks - ETL & Data Transformation
+# Azure Databricks - ETL & Data Transformation
 
-## 📌 Overview
+## Overview
 This directory contains the **ETL notebooks and scripts** used to transform the Olist E-Commerce dataset across the **Medallion Architecture** (Bronze → Silver → Gold).  
 
 Azure Databricks with **PySpark** provides the scalable compute layer for cleansing, enrichment, and modeling data stored in **Azure Data Lake Gen2 (Delta Lake)**.
 
 ---
 
-## 🗂 Directory Structure
+## Directory Structure
 
 ```
-
 azure\_databricks/
 │── Bronze-To-Silver.py              # Cleansing & standardization
 │── data\_transformation.py           # Reusable PySpark transformations
@@ -18,12 +17,11 @@ azure\_databricks/
 │── Silver-To-Gold(Facts).py         # Build Fact tables
 │── Silver-To-Gold(Facts).ipynb      # Notebook version (interactive)
 │── Silver-To-Gold(Facts).dbc        # Exported Databricks notebook (importable)
-
 ````
 
 ---
 
-## 🏗 Transformation Flow
+## Transformation Flow
 
 ### 1. Bronze → Silver
 - Enforce schema  
@@ -42,7 +40,7 @@ azure\_databricks/
 
 ---
 
-## 🖥 Example: Bronze → Silver Transformation
+## Example: Bronze → Silver Transformation
 
 ```python
 from pyspark.sql import functions as F
@@ -64,7 +62,7 @@ silver_df.write.format("delta").mode("overwrite").save("/mnt/datalake/silver/ord
 
 ---
 
-## 🖥 Example: Silver → Gold Fact Table
+## Example: Silver → Gold Fact Table
 
 ```python
 # Join orders, customers, and payments to build fact_sales
@@ -91,7 +89,7 @@ fact_sales.write.format("delta").mode("overwrite").partitionBy("purchase_date").
 
 ---
 
-## ⚡ Key Features
+## Key Features
 
 * **PySpark-based transformations** for scalability
 * **Delta Lake** for reliability (ACID transactions, schema evolution, time travel)
@@ -100,7 +98,7 @@ fact_sales.write.format("delta").mode("overwrite").partitionBy("purchase_date").
 
 ---
 
-## 📊 Usage
+## Usage
 
 * Import `.dbc` or `.ipynb` files into **Databricks Workspace**.
 * Attach to cluster with Delta support enabled.
@@ -109,7 +107,7 @@ fact_sales.write.format("delta").mode("overwrite").partitionBy("purchase_date").
 
 ---
 
-## 📚 References
+## References
 
 * [Azure Databricks Documentation](https://learn.microsoft.com/en-us/azure/databricks/)
 * [Delta Lake Guide](https://learn.microsoft.com/en-us/azure/databricks/delta/)

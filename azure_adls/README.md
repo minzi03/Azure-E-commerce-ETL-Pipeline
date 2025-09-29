@@ -1,6 +1,6 @@
-# 🌊 Azure Data Lake Storage (ADLS) - Medallion Architecture
+# Azure Data Lake Storage (ADLS) - Medallion Architecture
 
-## 📌 Overview
+## Overview
 This directory contains the **data lake layers** (Silver & Gold) used in the Olist E-Commerce ETL Pipeline.  
 Data is stored in **Delta Lake format** to enable ACID transactions, schema enforcement, and scalable data processing.
 
@@ -12,7 +12,7 @@ We follow the **Medallion Architecture**:
 
 ---
 
-## 🗂 Directory Structure
+## Directory Structure
 
 ```
 
@@ -36,7 +36,7 @@ azure\_adls/
 
 ---
 
-## 🏗 Architecture
+## Architecture
 
 ### 🔹 Bronze Layer
 Raw ingested data stored in ADLS Gen2.  
@@ -76,7 +76,7 @@ Optimized by `purchase_date` for performance tuning.
 
 ---
 
-## ⚡ Key Features
+## Key Features
 - **Delta Lake Format** for reliability & time travel.  
 - **Partitioned Data** (by `year_month`, `payment_type`, etc.) for efficient queries.  
 - **ACID Transactions** ensure data consistency.  
@@ -84,14 +84,14 @@ Optimized by `purchase_date` for performance tuning.
 
 ---
 
-## 📊 Usage
+## Usage
 - Query Gold tables from **Azure Synapse Analytics**.  
 - Connect Power BI to Synapse for **real-time dashboards**.  
 - Run historical analysis using Delta **time travel** features.  
 
 ---
 
-## 📚 References
+## References
 - [Medallion Architecture](https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion)  
 - [Azure Data Lake Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction)  
 - [Delta Lake](https://learn.microsoft.com/en-us/azure/databricks/delta/)

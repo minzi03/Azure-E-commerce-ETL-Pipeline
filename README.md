@@ -1,76 +1,70 @@
-# 🚀 Azure ETL Pipeline — End-to-End E-commerce Lakehouse (ADF + ADLS + Databricks + Synapse + Power BI)
+# 🚀 Azure-E-commerce-ETL-Pipeline
 
-This project implements a **production-style data pipeline on Azure** using the **Medallion Architecture (Bronze → Silver → Gold)**. It ingests raw data from multiple sources (HTTP/GitHub, SQL/MySQL, MongoDB), lands it in **Azure Data Lake Storage Gen2 (Delta Lake)**, transforms it with **Azure Databricks (PySpark)**, serves analytics through **Azure Synapse (Serverless/Dedicated)**, and visualizes insights in **Power BI**.
+*(ADF + ADLS + Databricks + Synapse + Power BI)*
 
----
-
-## 🏗️ Architecture at a Glance
-
-```
-[GitHub / HTTP]  [MySQL]  [MongoDB]
-       │            │         │
-       └───────(Linked Services)──────────┐
-                                          ▼
-                                Azure Data Factory (ADF)
-                                  └─ Pipelines (param, ForEach)
-                                          ▼
-                              ADLS Gen2 — Delta Lake (Bronze)
-                                          ▼
-                                 Databricks (PySpark ETL)
-                     Bronze → Silver (cleanse) → Gold (facts/dims, aggregates)
-                                          ▼
-                         Azure Synapse Analytics (External Tables / SQL)
-                                          ▼
-                               Power BI (Reports / Dashboards)
-```
-
-**Key design:** Delta Lake tables (transactional logs in `_delta_log`), partitioning strategies for large fact tables, parameterized pipelines, and modular notebooks for repeatable transformations.
+This project implements a **production-style data pipeline on Azure** using the **Medallion Architecture (Bronze → Silver → Gold)**.
+It ingests raw data from multiple sources (**HTTP/GitHub, MySQL, MongoDB**), lands it in **Azure Data Lake Storage Gen2 (Delta Lake)**, transforms it with **Azure Databricks (PySpark)**, serves analytics through **Azure Synapse (Serverless/Dedicated)**, and visualizes insights in **Power BI**.
 
 ---
 
-## 🧭 Repository Structure (What’s inside)
+## 🏗️ Project Architecture
+
+![Azure ETL Pipeline Architecture](assets/architecture.png)
+
+**Key design highlights:**
+
+* **Medallion Architecture** (Bronze → Silver → Gold).
+* **Delta Lake** (`_delta_log`, ACID, schema evolution).
+* **ADF Pipelines**: parameterized, ForEach, Lookup, error handling.
+* **Databricks PySpark**: cleansing, joins, surrogate keys, aggregates.
+* **Synapse Analytics**: external tables, serverless SQL.
+* **Power BI**: dashboards for sales trends, customer insights, and logistics performance.
+
+---
+
+## 🎯 Goals & Highlights
+
+* **Complete Lakehouse**: Bronze (raw) → Silver (cleansed) → Gold (business-ready).
+* **Multi-source ingestion**: HTTP/GitHub, SQL/MySQL, MongoDB.
+* **Delta Lake**: ACID transactions, schema evolution, time-travel.
+* **Partitioned facts**:
+
+  * `fact_order_payments_partitioned` → by `payment_type`
+  * `fact_sales_agg` → by `year_month`
+  * `fact_sales_partitioned` → by `purchase_date`
+* **Databricks ETL**: surrogate keys, cleansing, SCD-friendly dims, aggregates.
+* **Synapse serving**: external tables & views.
+* **Power BI**: actionable dashboards with KPIs & recommendations.
+
+---
+
+## 📂 Repository Structure
 
 ```
 minzi03-azure-etl-pipeline/
 │── README.md
 │
-├── azure_adls/                          # Lakehouse data (Delta format)
-│   ├── silver/                          # Cleansed entities (Delta tables)
-│   │   ├── customers/ _delta_log/...
-│   │   ├── geolocation/ _delta_log/...
-│   │   ├── orders/ ... products/ ... sellers/ ...
-│   │   └── order_items / order_payments / order_reviews ...
-│   └── gold/                            # Business-ready tables
-│       ├── dim_*                        # Dimensions (customer, product, seller, etc.)
-│       ├── bridge_order_items/          # Bridge table (many-to-many)
-│       ├── fact_sales/                  # Clean fact
-│       ├── fact_sales_agg/              # Aggregated by year_month (partitioned)
-│       └── fact_order_payments_partitioned/ payment_type=... (partitioned)
+├── assets/                 
+│   ├── azure_adls/         # Lakehouse layers (bronze, silver, gold)
+│   ├── azure_data_factory/ # ADF pipelines (foreach, lookup, linked services)
+│   ├── azure_synapse/      # Synapse external tables & views
+│   ├── olist_db/           # MySQL & MongoDB source overview
+│   └── powerbi/            # Dashboards (Sales, Logistics, Customer Insights)
 │
-├── azure_data_factory/                  # ADF assets (exported JSON)
-│   ├── dataset/                         # Datasets (HTTP, CSV, SQL, JSON)
-│   ├── linkedService/                   # Linked services (ADLS, SQL, HTTP)
-│   └── pipeline/data_ingestion_pipeline.json
-│
-├── azure_databricks/                    # Notebooks / Jobs (PySpark)
+├── azure_databricks/       # PySpark ETL scripts
 │   ├── Bronze-To-Silver.py
-│   ├── data_transformation.py
 │   ├── Silver-To-Gold(Dimensions).py
-│   ├── Silver-To-Gold(Facts).ipynb/.py/.dbc
-│   └── (Reusable transforms, joins, aggregations)
+│   ├── Silver-To-Gold(Facts).py
+│   └── data_transformation.py
 │
-├── azure_synapse/                       # Synapse SQL scripts
+├── azure_synapse/          # Synapse SQL scripts
 │   ├── SQL_script_1.sql
 │   └── SQL_script_2.sql
 │
-├── notebooks/                           # Ingestion examples (local/Databricks)
+├── notebooks/              # Ingestion examples
 │   ├── DataIngestion_MongoDB.ipynb
 │   ├── DataIngestion_MySQL.ipynb
-│   ├── DataIngestionToDB.ipynb
-│   └── dataingestiontodb.py
-│
-├── data/
-│   └── product_category_name_translation.csv
+│   └── DataIngestionToDB.ipynb
 │
 └── reports/
     └── powerbi/Analysis Highlights & Recommendations.docx
@@ -78,15 +72,75 @@ minzi03-azure-etl-pipeline/
 
 ---
 
-## 🎯 Goals & Highlights
+## 🔄 ETL Pipeline Stages
 
-* **Complete Lakehouse**: Bronze (raw) → Silver (cleansed) → Gold (business-ready).
-* **Multiple sources**: HTTP/GitHub, SQL/MySQL, MongoDB (enrichment).
-* **Delta Lake**: ACID transactions, schema evolution, time-travel.
-* **Partitioned facts**: e.g., `fact_order_payments_partitioned` (by `payment_type`), `fact_sales_agg` (by `year_month`), `fact_sales_partitioned` (by `purchase_date`).
-* **Databricks ETL**: modular notebooks for cleansing, surrogate keys, SCD-friendly dims, bridges, and aggregates.
-* **Synapse serving**: External tables/views for BI tools.
-* **Power BI**: Consumer-ready metrics & recommendations.
+### 1. **Data Ingestion — Bronze Layer**
+
+* Extract raw data from GitHub/HTTP, MySQL, MongoDB.
+* Land into **ADLS Gen2 Bronze** (Delta/Parquet).
+* Orchestrated via **ADF pipelines** with `Copy`, `ForEach`, `Lookup`.
+* Incremental ingestion with **watermarking**.
+
+![ADF Pipelines](assets/azure_data_factory/adf_all.png)
+
+---
+
+### 2. **Transformation — Silver Layer**
+
+* Cleaned & standardized with **Databricks PySpark**:
+
+  * Standardized column names & formats
+  * Null handling & deduplication
+  * Derived fields (dates, delivery times, geolocation normalization)
+* Stored as **Delta tables** in Silver for ACID compliance.
+
+![ADLS Silver Layer](assets/azure_adls/silver_layer.png)
+
+---
+
+### 3. **Modeling — Gold Layer**
+
+* Built **Star Schema** with:
+
+  * **Fact Tables**: `fact_sales`, `fact_sales_agg`, `fact_order_payments_partitioned`
+  * **Dimension Tables**: `dim_customer`, `dim_product`, `dim_seller`, `dim_orders`, `dim_geolocation`, `dim_order_items`, `dim_order_payments`, `dim_order_reviews`
+  * **Bridge Tables**: `bridge_order_items`
+* Optimizations: **Z-Ordering**, **Partitioning**, **Delta Vacuuming**.
+
+![ADLS Gold Layer](assets/azure_adls/gold_layer.png)
+
+---
+
+### 4. **Serving & Analytics**
+
+* Gold tables surfaced in **Azure Synapse** via external tables/views.
+* Final insights consumed in **Power BI dashboards**.
+
+![Azure Synapse Views](assets/azure_synapse/synapse.png)
+
+---
+
+## 🎥 Demo Walkthrough
+
+This walkthrough shows the **end-to-end pipeline in action**.
+
+1. **Azure Data Factory** — Orchestrates ingestion from MySQL, MongoDB, GitHub into ADLS Bronze.
+   ![ADF Pipeline](assets/azure_data_factory/foreach.png)
+
+2. **ADLS Bronze → Silver** — Raw data is cleansed and standardized in Silver layer.
+   ![ADLS Silver](assets/azure_adls/silver.png)
+
+3. **Databricks Transformations** — PySpark scripts build dimension & fact tables in Gold.
+   ![Databricks Script](assets/azure_databricks/Silver-To-Gold.png)
+
+4. **Synapse Analytics** — Gold layer tables are exposed as external views for SQL querying.
+   ![Synapse](assets/azure_synapse/synapse.png)
+
+5. **Power BI Dashboards** — Sales, Customer Insights, and Logistics KPIs visualized.
+
+   * Sales Dashboard: ![Sales](assets/powerbi/Sales_Dashboard.png)
+   * Customer Insights: ![Customer](assets/powerbi/Customer_Insights_Dashboard.png)
+   * Logistics & Delivery: ![Logistics](assets/powerbi/Logistics\&Delivery_Dashboard.png)
 
 ---
 
@@ -94,144 +148,65 @@ minzi03-azure-etl-pipeline/
 
 **Dimensions**
 
-* `dim_customer`, `dim_product`, `dim_seller`, `dim_geolocation`, `dim_order_items`, `dim_order_payments`, `dim_order_reviews`, `dim_orders`, `dim_language` (if used).
+* `dim_customer`, `dim_product`, `dim_seller`, `dim_orders`,
+* `dim_geolocation`, `dim_order_items`, `dim_order_payments`, `dim_order_reviews`
 
 **Facts**
 
-* `fact_sales` — atomic line-item sales.
-* `fact_sales_agg` — aggregated by `year_month`.
-* `fact_order_payments_partitioned` — partitioned by `payment_type`.
-* `bridge_order_items` — bridge for many-to-many relationships.
+* `fact_sales` — atomic line-item transactions (\~2.9M rows)
+* `fact_sales_agg` — aggregated by `year_month`
+* `fact_order_payments_partitioned` — partitioned by `payment_type`
+* `bridge_order_items` — resolves many-to-many relationships
 
 ---
 
 ## 🛠️ Tech Stack
 
-* **Azure Data Factory** – Orchestration (pipelines, linked services, datasets).
-* **ADLS Gen2 + Delta Lake** – Storage (Bronze/Silver/Gold).
-* **Azure Databricks (PySpark)** – Transformations, enrichment, aggregates.
-* **Azure Synapse Analytics** – External tables/views; SQL serving.
-* **Power BI** – Dashboards and storytelling.
-* **MySQL / MongoDB** – Source systems for transactional & enrichment data.
+* **Azure Data Factory (ADF)** → Orchestration, ingestion pipelines
+* **Azure Data Lake Storage Gen2 (ADLS)** → Centralized Delta Lake
+* **Azure Databricks (PySpark, Delta Lake)** → Data cleansing, transformations, schema modeling
+* **Azure Synapse Analytics** → Query serving, SQL-based reporting
+* **Power BI** → Visualization and storytelling
+* **Source Systems** → MySQL, MongoDB, GitHub HTTP endpoints
 
 ---
 
-## 🚀 Quick Start (End-to-End)
+## 📈 Business Value & Insights
 
-### 1) Prerequisites
+🔍 Key analysis results (via Power BI):
 
-* Azure subscription with permissions to create **Resource Group**, **ADLS Gen2**, **ADF**, **Databricks**, **Synapse**.
-* Workspace access to Databricks; a cluster with Delta enabled.
-* Connection details for source systems (HTTP/GitHub, SQL/MySQL, MongoDB).
-* Power BI Desktop (optional, for local development).
+* **Top payment method** → Credit Card dominates transactions.
+* **YoY Growth** → \~20% growth from 2017 → 2018 (till Aug).
+* **Top Categories** → Health & Beauty, Sports Leisure, Furniture Décor, Computer Accessories.
+* **Regional Insights** → Southeast states (SP, RJ, MG, RS, PR) contribute \~70% of revenue.
+* **Delivery SLAs** → Avg delivery = 10–12 days; delayed orders ↑ in 2018.
+* **Customer Retention** → Repeat purchase rate only 2.5–3%.
 
-### 2) Deploy Storage & Folders
+✅ **Recommendations**:
 
-* Create an **ADLS Gen2** account and filesystem (e.g., `datalake`).
-* Create directories for **/bronze**, **/silver**, **/gold** (the repo shows **silver** and **gold** samples populated).
-
-### 3) Import ADF Assets
-
-* In ADF Studio: **Manage → ARM template** or **Author** and import JSONs from:
-
-  * `azure_data_factory/linkedService/*.json` (update credentials/keys)
-  * `azure_data_factory/dataset/*.json` (point to your ADLS paths/HTTP/SQL)
-  * `azure_data_factory/pipeline/data_ingestion_pipeline.json`
-* Publish changes, test **debug run**, then create **triggers** for schedule.
-
-### 4) Run Bronze Ingestion
-
-* Use ADF pipeline `data_ingestion_pipeline.json` to land raw data in **Bronze**.
-* Validate files landed (CSV/JSON). (Your repo example shows mostly **Silver** and **Gold** to demonstrate outcomes.)
-
-### 5) Databricks Transformations
-
-* Import notebooks/scripts from `azure_databricks/`:
-
-  * `Bronze-To-Silver.py` — cleansing, standardization, type casting.
-  * `Silver-To-Gold(Dimensions).py` — conformed dimensions, surrogate keys.
-  * `Silver-To-Gold(Facts).ipynb/.py` — facts, joins, aggregates, partitioning.
-* Configure Spark configs for Delta/ADLS (service principal or SAS).
-* Run jobs to materialize **Silver → Gold** Delta tables (see `_delta_log` folders populated in the repo structure).
-
-### 6) Synapse Serving Layer
-
-* Open `azure_synapse/SQL_script_*.sql` in **Synapse**.
-* Create **External Data Source**, **File Format**, and **External Tables/Views** pointing to **Gold** paths in ADLS (CETAS if materialization is desired).
-* Validate queries (e.g., `SELECT TOP 100 * FROM ext.fact_sales_agg`).
-
-### 7) BI & Reporting
-
-* Connect **Power BI** to **Synapse Serverless endpoint** or **Delta tables via Spark connector**.
-* Build visuals (examples & notes in `reports/powerbi/Analysis Highlights & Recommendations.docx`).
+* Improve logistics to reduce delays (optimize approval & shipping).
+* Invest in loyalty programs to boost repeat customers.
+* Focus marketing on high-performing states & top categories.
+* Align campaigns with weekday purchase spikes (77% orders).
 
 ---
 
-## 🔧 Operational Considerations
+## 🚀 How to Run
 
-* **Partitioning**:
-
-  * `fact_order_payments_partitioned` → `payment_type=...`
-  * `fact_sales_partitioned` → `purchase_date=YYYY-MM-DD`
-  * `fact_sales_agg` → `year_month=YYYY-M`
-    Choose partitions that align with query filters (e.g., time, payment type).
-
-* **Schema Evolution**: Enable Delta `mergeSchema` where needed; keep schema registry in notebooks.
-
-* **Idempotency & Incremental Loads**: Use **upserts (merge)** in Databricks for daily incremental loads; maintain watermarks based on `order_purchase_timestamp`.
-
-* **Data Quality**: Null handling, deduplication, referential checks in **Silver**. Optionally add expectations (Great Expectations/Deequ) before writing **Gold**.
-
-* **Security**: Use **Managed Identity/Service Principal** for ADLS & Synapse. Limit SAS usage to dev.
-
-* **Monitoring**:
-
-  * **ADF**: pipeline run history, alerts.
-  * **Databricks**: job run logs, cluster metrics.
-  * **Synapse**: query history, cost management.
+1. **Provision Azure resources** (ADLS, ADF, Databricks, Synapse).
+2. **Deploy ADF assets** from `azure_data_factory/`.
+3. **Ingest raw data** into Bronze via ADF pipelines.
+4. **Run Databricks notebooks** to generate Silver & Gold tables.
+5. **Run Synapse scripts** to create external tables/views.
+6. **Open Power BI dashboards** to explore insights.
 
 ---
 
-## 🧪 Example: Create an External Table in Synapse (Serverless)
+## 📚 References
 
-```sql
--- Create a database scoped credential + external data source (once per workspace)
-CREATE EXTERNAL DATA SOURCE [dl_gold]
-WITH (
-  LOCATION = 'https://<your-adls-account>.dfs.core.windows.net/<filesystem>/azure_adls/gold'
-);
-
--- Read a partitioned Delta export (via CETAS) or directly query Parquet views if exported
--- Example: Query Parquet partitions for fact_sales_agg by year_month
-SELECT *
-FROM
-  OPENROWSET(
-      BULK 'fact_sales_agg/year_month=2017-7/*.parquet',
-      DATA_SOURCE = 'dl_gold',
-      FORMAT = 'PARQUET'
-  ) AS rows;
-```
-
-> Tip: For **Delta** direct querying from Synapse Serverless, export Gold views to **Parquet** via **CETAS** or Databricks jobs for maximum compatibility/performance.
-
----
-
-## 📈 What You’ll Learn
-
-* Building **production-ready** Azure pipelines with **ADF**.
-* Designing a **Lakehouse** using **Delta Lake** on ADLS.
-* Implementing **PySpark** transformations (cleansing, joins, aggregates).
-* Serving analytics through **Synapse** (external tables, CETAS).
-* Partitioning and performance tuning for **large facts**.
-* Connecting **Power BI** to a cloud-native analytics layer.
-
----
-
-## 📚 References (In-Repo)
-
-* **ADF**: `azure_data_factory/` (datasets, linked services, pipelines)
-* **Databricks**: `azure_databricks/` (Bronze→Silver→Gold jobs)
-* **Synapse**: `azure_synapse/` (SQL scripts for serving layer)
-* **Power BI**: `reports/powerbi/Analysis Highlights & Recommendations.docx`
-
----
+* [Olist E-Commerce Dataset (Kaggle)](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
+* [Azure Data Factory Docs](https://learn.microsoft.com/en-us/azure/data-factory/introduction)
+* [Azure Databricks Docs](https://learn.microsoft.com/en-us/azure/databricks/)
+* [Azure Synapse Analytics Docs](https://learn.microsoft.com/en-us/azure/synapse-analytics/)
+* [Power BI Docs](https://learn.microsoft.com/en-us/power-bi/)
+* [Delta Lake](https://delta.io/) — ACID transactions, schema evolution, time-travel
