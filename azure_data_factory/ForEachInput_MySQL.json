@@ -1,0 +1,7 @@
+[
+  { "table_name": "olist_orders_dataset", "file_name": "orders.csv" },
+  { "table_name": "olist_order_items_dataset", "file_name": "order_items.csv" },
+  { "table_name": "olist_order_payments_dataset", "file_name": "payments.csv" },
+  { "table_name": "olist_customers_dataset", "file_name": "customers.csv" },
+  { "table_name": "olist_sellers_dataset", "file_name": "sellers.csv" }
+]
