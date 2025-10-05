@@ -1,55 +1,73 @@
-# Azure Data Factory - Data Orchestration
+# Azure Data Factory – Data Orchestration
 
 ## Overview
 
-This module contains **Azure Data Factory (ADF)** assets used for **data ingestion, orchestration, monitoring, and automation**.
+This module contains **Azure Data Factory (ADF)** assets responsible for **data ingestion, orchestration, automation, and monitoring**.
 
-ADF pipelines manage the extraction of raw data from **multiple heterogeneous sources** (HTTP/GitHub, MySQL, MongoDB, SQL Server, Local Files) and land them into **Azure Data Lake Storage Gen2 (Bronze Layer)**.
+ADF pipelines extract raw data from **multiple heterogeneous sources** — including **HTTP/GitHub, MySQL, MongoDB, SQL Server, and local files** — and land them into **Azure Data Lake Storage Gen2 (Bronze Layer)** for further transformation and analytics.
 
-ADF ensures:
+### ADF Ensures
 
-* **Automation** → scheduled ingestion jobs
-* **Parameterization** → dynamic table/file handling
-* **Monitoring & Alerts** → track pipeline runs, notify on success/failure
-* **Hybrid Connectivity** → connect both on-prem and cloud sources
+* **Automation** → Scheduled ingestion jobs via triggers.
+* **Parameterization** → Dynamic ingestion of multiple tables/files.
+* **Monitoring & Alerts** → Pipeline run tracking with email notifications.
+* **Hybrid Connectivity** → Integrates both **on-premises** and **cloud** sources through **Self-hosted Integration Runtime (IR)**.
 
 ---
 
 ## Directory Structure
 
-```
+```bash
 azure_data_factory/
 │── dataset/                       # Datasets (CSV, JSON, SQL, etc.)
 │   ├── CSVFromLinkedServiceToSink.json
 │   ├── DataFromGithubViaLinkedService.json
-│   ├── Json1.json
-│   ├── MySqlTable1.json
+│   ├── File_geolocation.json
+│   ├── MySql_Customers.json
+│   ├── MySql_Items.json
+│   ├── MySql_Orders.json
+│   ├── MySql_Payments.json
+│   ├── MySql_Sellers.json
+│   ├── Sink_Customers.json
+│   ├── Sink_Items.json
+│   ├── Sink_Orders.json
+│   ├── Sink_Payments.json
+│   ├── Sink_Sellers.json
 │   └── SQLtoADLS.json
 │
 │── linkedService/                 # Linked services (connection configs)
 │   ├── ADLSForCSV.json
-│   ├── filessSQLDB.json
+│   ├── FileLocation.json
+│   ├── MySQLDB.json
 │   ├── httpGithubLinkedService.json
 │   ├── JsonFromGithubForLoop.json
 │   └── SQLtoADLSLinkedService.json
 │
+│── integrationRuntime/            # Self-hosted IR configuration
+│   └── OnPremise-to-Azure-integrationRuntime.json
+│
 │── pipeline/                      # Pipelines (ETL workflows)
-│   └── data_ingestion_pipeline.json
+│   ├── data_ingestion_pipeline.json
+│   └── data ingestion pipeline.json
+│
+│── trigger/                       # Automated scheduling
+│   └── trigger.json
 │
 ├── ForEachInput.json              # Sample input for ForEach activity
-├── diagnostic.json                # Diagnostic config
+├── ForEachInput_MySQL.json        # Example for MySQL ingestion
+├── diagnostic.json                # Diagnostic configuration
 ├── info.txt                       # Metadata/notes
 ```
 
 ---
 
-## Architecture - ADF Pipelines
+## Architecture – ADF Pipelines
 
 ### High-level Data Flow
 
-```
+```bash
 [ GitHub (CSV) ]       [ MySQL (Orders, Items, Payments, Customers, Sellers) ]
-[ MongoDB (Reviews) ]  [ SQL Server (ERP data) ]    [ Local Files (Geolocation) ]
+[ MongoDB (Reviews) ]  [ SQL Server (ERP) ]      [ Local Files (Geolocation) ]
           │
           ▼
       Azure Data Factory (ADF)
@@ -63,157 +81,189 @@ azure_data_factory/
    Azure Data Lake Gen2 (Bronze Layer)
 ```
 
-*ADF Pipeline Overview:*
+*Pipeline Overview:*
 ![ADF Pipeline Overview](../assets/azure_data_factory/pipeline_run.png)
 
 ---
 
-### Linked Services
+## Linked Services
 
-Connections to various sources:
+Connections to external and internal data systems.
 
-* **Azure Data Lake Gen2 (ADLS)** → storage target
-* **MySQL (On-Prem via Self-hosted IR)** → transactional tables
-* **MongoDB (NoSQL)** → unstructured/semi-structured data
-* **HTTP/GitHub** → public datasets (CSV, JSON)
-* **SQL Server (Optional)** → ERP/BI data sources
+* **Azure Data Lake Gen2 (ADLS)** → Cloud storage destination.
+* **MySQL (via Self-hosted IR)** → Local transactional database for core datasets.
+* **MongoDB** → Semi-structured NoSQL data.
+* **HTTP/GitHub** → Public CSV/JSON datasets.
+* **File System (On-Prem)** → Local CSV sources integrated through IR.
 
 *Linked Services in ADF:*
 ![ADF Linked Services](../assets/azure_data_factory/linkedservices.png)
 
+### Example: MySQL Linked Service
+
+Linked to **on-prem MySQL instance** using Self-hosted IR (`OnPremise-to-Azure-integrationRuntime`).
+
+![MySQL Linked Service](../assets/azure_data_factory/linked_mysql.png)
+
+### Example: File System Linked Service
+
+Used to access local files at `D:\cv\cloud_project\Azure-etl-pipeline\data` via the same Self-hosted IR.
+
+![File System Linked Service](../assets/azure_data_factory/linked_filesystem.png)
+
 ---
 
-### Lookup Activity
+## MySQL Database Schema
 
-Reads metadata/config (JSON list of files/tables) → drives dynamic ingestion.
-*Lookup Example:*
+The local MySQL database `mysqlazure` contains transactional Olist tables:
+
+* `olist_customers_dataset`
+* `olist_orders_dataset`
+* `olist_order_items_dataset`
+* `olist_order_payments_dataset`
+* `olist_sellers_dataset`
+
+*MySQL Workbench Example:*
+![MySQL Workbench](../assets/azure_data_factory/mysql_workbench.png)
+
+---
+
+## Lookup Activity
+
+Reads a JSON configuration (list of files/tables) that dynamically drives ForEach ingestion.
+
+*ADF Lookup Example:*
 ![ADF Lookup](../assets/azure_data_factory/lookup.png)
 
 ---
 
-### ForEach Activity
+## ForEach Activity
 
-Iterates over the list from Lookup → performs **parallel ingestion**.
-📷 *ForEach Example:*
+Iterates through dataset lists returned by Lookup — enabling **parallel ingestion** across multiple sources.
+
+*ADF ForEach Example:*
 ![ADF ForEach](../assets/azure_data_factory/foreach.png)
 
 ---
 
-### Copy Data Activities
+## Copy Data Activities
 
-* **MySQL → ADLS**: Orders, Items, Payments, Customers, Sellers
-* **MongoDB → ADLS**: Reviews, Product Category Translations
-* **HTTP/GitHub → ADLS**: Products, Geolocation
-* **Local Files → ADLS**: Additional CSVs
+| Source      | Destination | Description                                                    |
+| ----------- | ----------- | -------------------------------------------------------------- |
+| MySQL       | ADLS Gen2   | Core OLTP tables (Orders, Items, Payments, Customers, Sellers) |
+| MongoDB     | ADLS Gen2   | Reviews, Product Category Translations                         |
+| HTTP/GitHub | ADLS Gen2   | Product & Geolocation CSVs                                     |
+| File System | ADLS Gen2   | Local data ingestion (CSV)                                     |
 
-*Pipeline Execution Screenshot:*
+*Pipeline Execution Example:*
 ![ADF Pipeline Run](../assets/azure_data_factory/pipeline_run.png)
 
 ---
 
-## Supported Data Sources
+## Integration Runtime (IR)
 
-* **MySQL (On-Prem via IR)** → Orders, Items, Payments, Customers, Sellers
-* **MongoDB** → Reviews, Product Category Translations
-* **GitHub (HTTP CSV)** → Products, Geolocation
-* **SQL Server (Optional)** → ERP tables
+Two runtimes ensure hybrid connectivity:
+
+| Runtime                                   | Type        | Purpose                                 |
+| ----------------------------------------- | ----------- | --------------------------------------- |
+| **AutoResolveIntegrationRuntime**         | Cloud       | Connect to ADLS, GitHub, HTTP           |
+| **OnPremise-to-Azure-integrationRuntime** | Self-hosted | Connect on-prem MySQL, local filesystem |
+
+*Integration Runtime Setup:*
+![Integration Runtime](../assets/azure_data_factory/integration_runtime.png)
 
 ---
 
 ## Notification & Alerting (Logic Apps)
 
-* **WebActivity** in ADF sends status (`Succeeded` or `Failed`) to **Azure Logic Apps**.
-* Logic App receives payload (pipelineName, status, runId, time) and sends an **email notification**.
-* Ensures real-time alerting for pipeline health.
+ADF sends **WebActivity callbacks** to **Azure Logic Apps** for pipeline status notifications.
 
-*ADF Success/Fail Webhook:*
-![ADF Success Fail](../assets/azure_data_factory/webhook.png)
+| Step | Component    | Description                                                    |
+| ---- | ------------ | -------------------------------------------------------------- |
+| 1    | WebActivity  | Sends POST payload (`pipelineName`, `status`, `runId`, `time`) |
+| 2    | Logic App    | Parses schema and composes email content                       |
+| 3    | Outlook/SMTP | Sends notification to recipients                               |
+
+*ADF Webhook Example:*
+![ADF Webhook](../assets/azure_data_factory/webhook.png)
 
 *Logic App Designer:*
 ![Logic App Designer](../assets/azure_data_factory/logicapp_designer.png)
 
-*Logic App – HTTP Schema:*
+*Logic App Schema:*
 ![Logic App Schema](../assets/azure_data_factory/logicapp_schema.png)
 
-*Logic App – Email Template:*
+*Logic App Email Template:*
 ![Logic App Email](../assets/azure_data_factory/logicapp_email.png)
 
 ---
 
 ## Monitoring & Metrics (Azure Monitor)
 
-* ADF integrates with **Azure Monitor** for pipeline metrics.
-* Track **Succeeded runs**, **Failed runs**, and pipeline duration.
-* Create **alerts & dashboards** for proactive monitoring.
+* Integrated with **Azure Monitor** to track pipeline execution metrics.
+* Monitors **Succeeded vs Failed** runs, duration, and throughput.
 
-*Select Scope for Monitoring:*
-![ADF Monitor Scope](../assets/azure_data_factory/monitor_scope.png)
+*Monitor Scope:*
+![Monitor Scope](../assets/azure_data_factory/monitor_scope.png)
 
-*Pipeline Metrics – Succeeded vs Failed:*
-![ADF Monitor Metrics](../assets/azure_data_factory/monitor_metrics.png)
+*Monitor Metrics:*
+![Monitor Metrics](../assets/azure_data_factory/monitor_metrics.png)
 
 ---
 
 ## Scheduling & Automation (Triggers)
 
-* Pipelines can be scheduled using **Schedule Triggers**.
-* Example: run every **15 hours**, timezone set to **UTC+7 (Bangkok, Hanoi, Jakarta)**.
+* Pipelines scheduled using **time-based triggers**.
+* Example: Execute every **15 hours**, timezone **UTC+7 (Bangkok, Hanoi, Jakarta)**.
 
 *Trigger Setup:*
 ![ADF Trigger](../assets/azure_data_factory/trigger_schedule.png)
 
 ---
 
-## Integration Runtime (IR)
+## Validation & Usage
 
-* Two runtimes are configured:
+1. Import all assets into **ADF Studio**
 
-  * **AutoResolveIntegrationRuntime (Azure)** → cloud-based sources (HTTP, GitHub, ADLS).
-  * **Self-Hosted IR (OnPremise-to-Azure-integrationRuntime)** → connect to on-prem MySQL & SQL Server.
-
-*Integration Runtime Setup:*
-![ADF Integration Runtime](../assets/azure_data_factory/integration_runtime.png)
-
----
-
-## Key Features
-
-* **Dynamic ingestion with Lookup + ForEach**
-* **Reusable Datasets** (parameterized sources/sinks)
-* **Self-Hosted Integration Runtime (IR)** for hybrid connectivity
-* **Error Handling & Webhook Notification** (Logic App Email)
-* **Monitoring with Azure Monitor**
-* **Automation with Triggers**
+   * `Manage → Linked Services`
+   * `Manage → Datasets`
+   * `Author → Pipelines`
+2. Update credentials & ADLS paths.
+3. Debug pipeline → Verify Lookup → ForEach → Copy sequence.
+4. Configure **Logic App** for notifications.
+5. Monitor pipelines in **Azure Monitor**.
+6. Schedule recurring runs with **Triggers**.
 
 ---
 
-## Future Enhancements
+## Relationship with Other Layers
 
-* Convert CSV → **Parquet** for optimized storage
-* Add **Silver Layer (cleaned data)** with Databricks
-* Integration with **Synapse Analytics** for OLAP
-* Dashboarding with **Power BI**
+| Layer      | Tool       | Description               |
+| ---------- | ---------- | ------------------------- |
+| **Bronze** | ADF + ADLS | Raw data ingestion        |
+| **Silver** | Databricks | Cleansing, transformation |
+| **Gold**   | Synapse    | Star-schema warehouse     |
+| **BI**     | Power BI   | Dashboards & KPIs         |
+
+This ADF layer serves as the **foundation of the Medallion Architecture**:
+`Bronze → Silver → Gold → Power BI`.
 
 ---
 
-## Usage
+## Key Features Summary
 
-1. Import JSON assets into **ADF Studio**:
-
-   * **Manage → Linked services** → upload configs
-   * **Manage → Datasets** → import dataset JSONs
-   * **Author → Pipelines** → import pipeline JSON
-2. Update credentials & ADLS paths
-3. Debug pipeline → validate ingestion
-4. Configure **Logic App** for notifications
-5. Monitor pipelines with **Azure Monitor**
-6. Schedule execution with **Triggers**
+* Dynamic ingestion (Lookup + ForEach)
+* Reusable parameterized datasets
+* Hybrid connectivity with Self-hosted IR
+* Automated email alerts via Logic App
+* Real-time monitoring via Azure Monitor
+* Trigger-based scheduling
 
 ---
 
 ## References
 
-* [Azure Data Factory Documentation](https://learn.microsoft.com/en-us/azure/data-factory/introduction)
+* [Azure Data Factory – Overview](https://learn.microsoft.com/en-us/azure/data-factory/introduction)
 * [ADF Linked Services](https://learn.microsoft.com/en-us/azure/data-factory/concepts-linked-services)
 * [ADF ForEach Activity](https://learn.microsoft.com/en-us/azure/data-factory/control-flow-for-each-activity)
 * [ADF Lookup Activity](https://learn.microsoft.com/en-us/azure/data-factory/control-flow-lookup-activity)
