@@ -1,97 +1,228 @@
-# Azure Data Lake Storage (ADLS) - Medallion Architecture
+# Azure Data Lake Storage (ADLS) — Medallion Architecture
 
 ## Overview
-This directory contains the **data lake layers** (Silver & Gold) used in the Olist E-Commerce ETL Pipeline.  
-Data is stored in **Delta Lake format** to enable ACID transactions, schema enforcement, and scalable data processing.
 
-We follow the **Medallion Architecture**:
+This directory contains the **data lake storage layers** (Bronze → Silver → Gold) used in the **Olist E-Commerce ETL Pipeline**.
+It is deployed on **Azure Data Lake Storage Gen2 (ADLS)** and uses **Delta Lake format**, enabling:
 
-- **Bronze Layer (Raw)**: Raw ingested data (not stored in this repo to reduce size).
-- **Silver Layer (Cleansed)**: Cleaned, standardized, and structured data ready for transformation.
-- **Gold Layer (Business-ready)**: Star Schema design with Fact & Dimension tables for analytics and reporting.
+* ACID transactions
+* Schema enforcement & evolution
+* Scalable reads/writes across large datasets
+* Seamless integration with **Azure Databricks** & **Azure Synapse Analytics**
+
+This structure follows the **Medallion Architecture pattern**, ensuring modularity, performance, and data governance across all transformation stages.
+
+---
+
+## Medallion Layers Overview
+
+| Layer                     | Description                                                       | Format          | Purpose                       |
+| :------------------------ | :---------------------------------------------------------------- | :-------------- | :---------------------------- |
+| **Bronze (Raw)**          | Ingested raw data from source systems (MySQL, MongoDB, HTTP/CSV). | CSV / JSON      | Data ingestion & traceability |
+| **Silver (Cleansed)**     | Cleaned, standardized, and structured datasets.                   | Delta           | Data quality & conformance    |
+| **Gold (Business-Ready)** | Curated star schema with Fact & Dimension tables.                 | Delta / Parquet | Analytical consumption        |
 
 ---
 
 ## Directory Structure
 
+```bash
+azure_adls/
+│── bronze/                     # Raw ingested data
+│   ├── olist_customers_dataset.csv
+│   ├── olist_orders_dataset.csv
+│   ├── olist_order_items_dataset.csv
+│   └── ...
+│
+│── silver/                     # Cleansed Delta tables
+│   ├── customers/
+│   ├── orders/
+│   ├── products/
+│   ├── sellers/
+│   └── ...
+│
+│── gold/                       # Business-ready Star Schema
+│   ├── dim_customer/
+│   ├── dim_orders/
+│   ├── dim_product/
+│   ├── dim_seller/
+│   ├── bridge_order_items/
+│   ├── fact_sales/
+│   ├── fact_sales_agg/
+│   ├── fact_sales_partitioned/
+│   └── fact_order_payments_partitioned/
+│
+└── _delta_log/                 # Delta Lake transaction log (version control)
 ```
 
-azure\_adls/
-│── silver/                # Clean, structured data (customers, orders, products, etc.)
-│── gold/                  # Optimized Fact & Dimension tables
-│   ├── dim\_customer/
-│   ├── dim\_orders/
-│   ├── dim\_product/
-│   ├── dim\_seller/
-│   ├── fact\_order\_payments\_partitioned/
-│   ├── fact\_sales/
-│   └── fact\_sales\_agg/
-
-```
-
-- `silver/` → Intermediate cleansed data, schema enforced.  
-- `gold/` → Star schema model (Dimensions & Facts) with Delta Lake optimizations (partitioning, Z-Ordering).  
-- `_delta_log/` → Tracks version history for each Delta table.  
-- Partitioned folders (e.g., `payment_type=creditcard`, `year_month=2017-05`) improve query performance.  
+* Each folder = 1 logical **Delta table**
+* `_delta_log/` enables **time travel & ACID compliance**
+* Partition folders (e.g. `year_month=2017-05`, `purchase_date=2017-08-01`) boost query performance
 
 ---
 
-## Architecture
+## Layer-by-Layer Architecture
 
-### 🔹 Bronze Layer
-Raw ingested data stored in ADLS Gen2.  
+### Bronze Layer — *Raw Ingestion*
+
+Stores unprocessed data ingested via **Azure Data Factory** from multiple sources:
+
+* MySQL: transactional data (orders, payments, products)
+* HTTP/CSV: Olist public datasets
+* MongoDB: additional metadata or user profiles
+
+**Screenshot — Bronze Layer**
 ![Bronze Layer](../assets/azure_adls/bronze_layer.png)
 
 ---
 
-### 🔹 Silver Layer
-Cleaned & standardized datasets (customers, orders, sellers, products, etc.).  
+### Silver Layer — *Cleansed Data*
+
+Processed and standardized data created via **Azure Databricks notebooks**.
+Tasks performed here:
+
+* Deduplication & type casting
+* Handling missing values
+* Renaming & normalizing column names
+* Enforcing schema integrity via Delta Lake
+
+**Screenshot — Silver Layer**
 ![Silver Layer](../assets/azure_adls/silver_layer.png)
+
+Example:
+`silver/customers/`, `silver/orders/`, `silver/products/` — each stored as **Delta Parquet** files.
+
+**Example — Silver Customers Table**
+![Silver Example](../assets/azure_adls/silver.png)
 
 ---
 
-### 🔹 Gold Layer (Overview)
-Business-ready star schema for analytics and BI reporting.  
+### Gold Layer — *Business-Ready Star Schema*
+
+The **Gold Layer** is optimized for analytics, containing **Fact & Dimension** tables joined in a **Star Schema**.
+Data here powers **Synapse external tables** and **Power BI dashboards**.
+
+**Screenshot — Gold Layer**
 ![Gold Layer](../assets/azure_adls/gold_layer.png)
 
-#### 1. Bridge Table  
-Used to handle many-to-many relationships.  
+---
+
+#### Bridge Table
+
+Resolves many-to-many relationships between `orders` and `products`.
+
+**Bridge Table**
 ![Gold Bridge](../assets/azure_adls/gold_bridge.png)
 
-#### 2. Dimension Tables  
-Customer, Product, Seller, Orders, etc.  
+---
+
+#### Dimension Tables
+
+Contain descriptive data:
+
+* **dim_customer**
+* **dim_product**
+* **dim_seller**
+* **dim_orders**
+* **dim_order_reviews**
+
+**Dimension Tables**
 ![Gold Dimensions](../assets/azure_adls/gold_dim.png)
 
-#### 3. Fact Sales Table  
-Core sales transactions for revenue analysis.  
+---
+
+#### Fact Sales Table
+
+Central transaction table joining all major dimensions.
+Captures measures like:
+
+* `sales_amount`
+* `freight_value`
+* `review_score`
+* `purchase_date`
+* `delivery_date`
+
+**Fact Sales**
 ![Gold Fact Sales](../assets/azure_adls/gold_fact_sales.png)
 
-#### 4. Aggregated Fact Sales  
-Pre-aggregated data by year/month for faster reporting.  
+---
+
+#### Aggregated Fact Sales
+
+Pre-computed by `year_month` to accelerate Power BI queries.
+Used in **Sales Overview Dashboard** for trends and KPIs.
+
+**Aggregated Fact**
 ![Gold Fact Sales Aggregated](../assets/azure_adls/gold_fact_sales_agg.png)
 
-#### 5. Partitioned Fact Sales  
-Optimized by `purchase_date` for performance tuning.  
+---
+
+#### Partitioned Fact Sales
+
+Partitioned by `purchase_date` to optimize storage and Synapse query performance.
+
+**Partitioned Fact**
 ![Gold Fact Sales Partitioned](../assets/azure_adls/gold_fact_sales_partitioned.png)
 
 ---
 
 ## Key Features
-- **Delta Lake Format** for reliability & time travel.  
-- **Partitioned Data** (by `year_month`, `payment_type`, etc.) for efficient queries.  
-- **ACID Transactions** ensure data consistency.  
-- **Medallion Architecture** improves scalability & reusability.  
+
+* **Delta Lake Reliability** — ACID transactions, schema evolution, and version control
+* **Partitioning & Z-Ordering** — Optimized joins and filtering for large datasets
+* **Data Lineage & Auditability** — `_delta_log` allows full version tracking
+* **Synapse Integration** — External tables via `OPENROWSET` or CETAS
+* **BI Ready** — Direct consumption in Power BI for live analytics
 
 ---
 
 ## Usage
-- Query Gold tables from **Azure Synapse Analytics**.  
-- Connect Power BI to Synapse for **real-time dashboards**.  
-- Run historical analysis using Delta **time travel** features.  
+
+### 1️. Query Data from Synapse Serverless SQL
+
+```sql
+SELECT TOP 100 *
+FROM OPENROWSET(
+    BULK 'gold/fact_sales/',
+    DATA_SOURCE = 'goldlayer',
+    FORMAT = 'PARQUET'
+) AS rows;
+```
+
+### 2️. Power BI Integration
+
+Connect **Power BI** to the **Synapse SQL endpoint** for near-real-time analytics.
+Supports **DirectQuery** mode for efficient aggregation queries.
+
+### 3️. Delta Lake Time Travel
+
+```python
+df_v1 = spark.read.format("delta").option("versionAsOf", 1).load("abfss://gold@olistdata/fact_sales")
+```
+
+---
+
+## Summary
+
+> The `azure_adls/` directory serves as the **data lakehouse foundation** for the Olist E-Commerce pipeline.
+> It consolidates raw source data into a governed, versioned, and query-optimized structure, forming the backbone for **Synapse** and **Power BI** analytics.
 
 ---
 
 ## References
-- [Medallion Architecture](https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion)  
-- [Azure Data Lake Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction)  
-- [Delta Lake](https://learn.microsoft.com/en-us/azure/databricks/delta/)
+
+* [Medallion Architecture – Databricks](https://learn.microsoft.com/en-us/azure/databricks/lakehouse/medallion)
+* [Azure Data Lake Storage Gen2](https://learn.microsoft.com/en-us/azure/storage/blobs/data-lake-storage-introduction)
+* [Delta Lake – Azure Databricks](https://learn.microsoft.com/en-us/azure/databricks/delta/)
+* [Optimize with Z-Order & Partitioning](https://learn.microsoft.com/en-us/azure/databricks/delta/optimizations/z-order)
+
+---
+
+## Related Components
+
+| Component                   | Description                                 |
+| --------------------------- | ------------------------------------------- |
+| **Azure Data Factory**      | Ingests raw data into ADLS (Bronze)         |
+| **Azure Databricks**        | Cleanses & transforms data (Silver → Gold)  |
+| **Azure Synapse Analytics** | Exposes Gold tables via external views      |
+| **Power BI**                | Visualizes data with interactive dashboards |
