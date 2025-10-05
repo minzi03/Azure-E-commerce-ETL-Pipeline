@@ -1,0 +1,15 @@
+{
+    "name": "MySql_Items",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "MySQLDB",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "MySqlTable",
+        "schema": [],
+        "typeProperties": {
+            "tableName": "`olist_order_items_dataset`"
+        }
+    }
+}

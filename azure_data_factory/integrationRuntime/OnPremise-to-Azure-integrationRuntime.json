@@ -1,0 +1,9 @@
+{
+    "name": "OnPremise-to-Azure-integrationRuntime",
+    "properties": {
+        "type": "SelfHosted",
+        "typeProperties": {
+            "selfContainedInteractiveAuthoringEnabled": true
+        }
+    }
+}

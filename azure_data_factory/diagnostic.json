@@ -1,20 +1,20 @@
 {
-    "now": "2025-08-31T05:45:09.571Z",
-    "perfNow": 64591.40000009537,
-    "diagnosticCorrelation": "b37e8ad2-7a71-443a-969e-777b503aede9",
+    "now": "2025-10-05T16:32:45.075Z",
+    "perfNow": 172206564,
+    "diagnosticCorrelation": "d7f1a7b6-e3e1-446d-8d39-ea8a3e8d2303",
     "source": "DownloadSupportFiles",
     "environment": {
         "productName": "adf",
-        "buildVersion": "1.0.082025.3",
+        "buildVersion": "1.0.093025.4",
         "environmentType": 3,
         "resourceName": "etl-olist-adf",
         "resourceRegion": "southeastasia",
         "resourceGroup": "etl-olist-rg",
         "subscriptionId": "cb79f99d-0e01-4ebe-8774-6758475698e8",
-        "sessionId": "TQaD81AtriLT8plQTb0eoK",
+        "sessionId": "gR069gYaEY4JiURH5GZu5S",
         "operationId": "",
         "gitType": "live",
-        "loggingKey": "b9d9a2b4-52bf-4b74-949b-910442b330f2"
+        "loggingKey": "5b8bfcaf-b63c-494f-8461-ad8d1c0aa228"
     },
     "additionalInfo": {
         "selectedResource": "data ingestion pipeline",

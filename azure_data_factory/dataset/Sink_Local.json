@@ -1,0 +1,23 @@
+{
+    "name": "Sink_Local",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "ADLSForCSV",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "AzureBlobFSLocation",
+                "folderPath": "bronze",
+                "fileSystem": "olistdata"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": []
+    }
+}

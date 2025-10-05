@@ -1,0 +1,17 @@
+{
+    "name": "FileLocation",
+    "type": "Microsoft.DataFactory/factories/linkedservices",
+    "properties": {
+        "annotations": [],
+        "type": "FileServer",
+        "typeProperties": {
+            "host": "D:\\cv\\cloud_project\\Azure-etl-pipeline\\data",
+            "userId": "DUY-03\\miynzi",
+            "encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI1ZTA1ZTgwZC0zNDcxLTQ4MzAtODcxOS1iODU2OTJhYmVkY2IiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+        },
+        "connectVia": {
+            "referenceName": "OnPremise-to-Azure-integrationRuntime",
+            "type": "IntegrationRuntimeReference"
+        }
+    }
+}

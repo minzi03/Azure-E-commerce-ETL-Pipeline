@@ -1,0 +1,43 @@
+{
+    "name": "File_geolocation",
+    "properties": {
+        "linkedServiceName": {
+            "referenceName": "FileLocation",
+            "type": "LinkedServiceReference"
+        },
+        "annotations": [],
+        "type": "DelimitedText",
+        "typeProperties": {
+            "location": {
+                "type": "FileServerLocation",
+                "fileName": "olist_geolocation_dataset.csv"
+            },
+            "columnDelimiter": ",",
+            "escapeChar": "\\",
+            "firstRowAsHeader": true,
+            "quoteChar": "\""
+        },
+        "schema": [
+            {
+                "name": "geolocation_zip_code_prefix",
+                "type": "String"
+            },
+            {
+                "name": "geolocation_lat",
+                "type": "String"
+            },
+            {
+                "name": "geolocation_lng",
+                "type": "String"
+            },
+            {
+                "name": "geolocation_city",
+                "type": "String"
+            },
+            {
+                "name": "geolocation_state",
+                "type": "String"
+            }
+        ]
+    }
+}
