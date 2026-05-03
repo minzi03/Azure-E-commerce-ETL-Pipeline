@@ -1,0 +1,9 @@
+[
+  {
+    "enabled": true,
+    "entity_name": "order_reviews",
+    "collection_name": "order_reviews",
+    "sink_folder": "bronze/mongodb/order_reviews/",
+    "file_name_prefix": "order_reviews"
+  }
+]

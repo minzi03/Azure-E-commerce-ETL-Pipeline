@@ -1,0 +1,10 @@
+[
+  {
+    "enabled": true,
+    "entity_name": "geolocation",
+    "source_folder": "geolocation",
+    "file_name": "olist_geolocation_dataset.csv",
+    "sink_folder": "bronze/local_files/geolocation/",
+    "file_name_prefix": "geolocation"
+  }
+]

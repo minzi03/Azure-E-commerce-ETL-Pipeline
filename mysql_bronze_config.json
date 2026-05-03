@@ -1,0 +1,44 @@
+[
+  {
+    "enabled": true,
+    "entity_name": "customers",
+    "source_table": "olist_customers_dataset",
+    "sink_folder": "bronze/mysql/customers/",
+    "file_name_prefix": "customers"
+  },
+  {
+    "enabled": true,
+    "entity_name": "orders",
+    "source_table": "olist_orders_dataset",
+    "sink_folder": "bronze/mysql/orders/",
+    "file_name_prefix": "orders"
+  },
+  {
+    "enabled": true,
+    "entity_name": "order_items",
+    "source_table": "olist_order_items_dataset",
+    "sink_folder": "bronze/mysql/order_items/",
+    "file_name_prefix": "order_items"
+  },
+  {
+    "enabled": true,
+    "entity_name": "order_payments",
+    "source_table": "olist_order_payments_dataset",
+    "sink_folder": "bronze/mysql/order_payments/",
+    "file_name_prefix": "order_payments"
+  },
+  {
+    "enabled": true,
+    "entity_name": "sellers",
+    "source_table": "olist_sellers_dataset",
+    "sink_folder": "bronze/mysql/sellers/",
+    "file_name_prefix": "sellers"
+  },
+  {
+    "enabled": true,
+    "entity_name": "products",
+    "source_table": "olist_products_dataset",
+    "sink_folder": "bronze/mysql/products/",
+    "file_name_prefix": "products"
+  }
+]

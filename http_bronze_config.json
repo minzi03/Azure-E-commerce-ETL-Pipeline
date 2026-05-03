@@ -1,0 +1,9 @@
+[
+  {
+    "enabled": true,
+    "entity_name": "product_category_name_translation",
+    "relative_url": "/minzi03/Azure-E-commerce-ETL-Pipeline/refs/heads/main/data/product_category_name_translation.csv",
+    "sink_folder": "bronze/api/product_category_name_translation/",
+    "file_name_prefix": "product_category_name_translation"
+  }
+]
